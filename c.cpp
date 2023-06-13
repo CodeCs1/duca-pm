@@ -220,8 +220,8 @@ int main(int argc, char* argv[]) {
 											if (tmp == command1) {
 												tmp = command;
 											}
-											tmp += "\n";
-											replace << tmp;
+											cout << tmp << endl;
+											replace << tmp << endl;
 										}
 
 										cout << "[*] Starting installer script..." <<endl;
