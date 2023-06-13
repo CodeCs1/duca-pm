@@ -169,7 +169,7 @@ int main(int argc, char* argv[]) {
 			}
 			
 		}
-		for (int i = 0; i < argc; i++) {
+		for (int i = 1; i < argc; i++) {
 			string args1 = argv[i];
 			if (args1 == "-i") {
 				string args2 = argv[i+1];
@@ -190,9 +190,9 @@ int main(int argc, char* argv[]) {
 							string instscr;
 							ifstream Insrscript(args2 + "/" + args2 + ".pckscr");
 
-							ifstream PackageInstallerScript(args2+"/"+args2+".instscr");
+							ifstream PackageInstallerScript(args2+"/"+args2+".instscr", ofstream::out);
 
-							ofstream replace;
+							ofstream replace(args2+"/"+args2+"-path.instscr");
 							if (argc == 6) {
 								if (string(argv[4]) == "--prefix") {
 									while(getline(Insrscript, instscr)) {
@@ -205,25 +205,27 @@ int main(int argc, char* argv[]) {
 										const char* linko = command2.c_str();
 										system(linko);
 
+										string commandremoveold = "rm -rf " + args2 + "/" + args2 + ".instscr";
+
+										system(commandremoveold.c_str());
+
 										cout << "[*] Replacing file location..." <<endl;
 										string location = argv[5];
 										string tmp;
 
-										string command = "make install DESTDIR=" + location;
+										string command = "make DESTDIR=" + location + " install";
 										string command1 = "make install";
 
 										while (getline(PackageInstallerScript, tmp)) {
 											if (tmp == command1) {
 												tmp = command;
 											}
-											//tmp += "\n";
-											cout << tmp << endl;
-											replace.open(args2 + "/" + args2 + ".instscr");
-											replace << tmp << endl;
+											tmp += "\n";
+											replace << tmp;
 										}
 
 										cout << "[*] Starting installer script..." <<endl;
-										string command3 = "sh " + args2 + "/" + args2 + ".instscr 1.tar.gz";
+										string command3 = "sh " + args2 + "/" + args2 + "-path.instscr 1.tar.gz";
 										const char* command4 = command3.c_str();
 										system(command4);
 									}
@@ -410,6 +412,9 @@ int main(int argc, char* argv[]) {
 					cout << "      Find a package" <<endl;
 					return 0;
 				}
+			}else /*if (args1 != "-h" || args1 != "-i" && args1 != "-F")*/ {
+				cout << "[!] The command " << args1 << " is not found." <<endl;
+				return 1;
 			}
 		}
 	}
