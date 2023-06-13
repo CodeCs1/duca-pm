@@ -81,7 +81,7 @@ int download_package(string package_links, PackageType packagetype) {
 
 int check_package(string package_links) {
 	cout << "[*] Check if " << package_links << " is exist" <<endl;
-	string command = "wget -q --method=HEAD " + package_links;
+	string command = "wget -q --no-check-certificate --method=HEAD " + package_links;
 	const char* command1 = command.c_str();
 	int errorcode = system(command1);
 	if (errorcode != 0) {
